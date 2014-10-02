@@ -26,3 +26,13 @@ before_script:
   - if [[ "$DB" == "mysql" ]]; then mysql -e "DROP DATABASE IF EXISTS typo3_test;" -uroot; fi
   - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS typo3_test;" -uroot; fi
   - if [[ "$DB" == "mysql" ]]; then mysql -uroot typo3_test < build-environment/Introduction/typo3conf/ext/introduction/Resources/Private/Subpackages/Introduction/Database/introduction.sql; fi
+
+  - if [[ "$DB" == "mysql" && -f typo3conf/ext/builder/Build/ImportSchema.sql ]]; then mysql -uroot typo3_test < typo3conf/ext/builder/Build/ImportSchema.sql; fi
+
+script:
+# phplint checking on all PHP source files in extension
+  - typo3/cli_dispatch.phpsh extbase builder:phpsyntax --extension builder
+# fluid template syntax checking on all files in extension
+  - typo3/cli_dispatch.phpsh extbase builder:fluidsyntax --extension builder
+# PHPUnit tests from overridden phpunit tests configuration file
+  - if [[ -f typo3conf/ext/builder/Tests/phpunit.xml ]]; then typo3/cli_dispatch.phpsh phpunit -c phpunit.xml; fi
