@@ -4,8 +4,11 @@ php:
   - 5.6
   - 5.5
 
+env:
+  - DB=mysql TYPO3=master INTEGRATION=master
+  - DB=mysql TYPO3=TYPO3_6-1 INTEGRATION=TYPO3_6-1
+
 before_script:
-  - cd ..
+
 
 script:
-  - ls -la
